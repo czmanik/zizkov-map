@@ -56,6 +56,8 @@
         </div>
     </footer>
 
+    <livewire:cookie-consent />
+
     @livewireScripts
     @stack('scripts')
 </body>

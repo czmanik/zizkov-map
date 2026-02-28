@@ -2,9 +2,64 @@
     <div class="max-w-md mx-auto mt-20 p-6 bg-white rounded-lg shadow-lg">
         <h1 class="text-2xl font-bold mb-6 text-center">Registrace návštěvníka</h1>
 
-        <p class="text-gray-600 mb-8 text-center">
-            Pro uložení vašeho osobního programu se prosím zaregistrujte pomocí sociálních sítí.
-        </p>
+        <form method="POST" action="/register" class="space-y-4 mb-6">
+            @csrf
+            <div>
+                <label for="nickname" class="block text-sm font-medium text-gray-700">Přezdívka</label>
+                <input type="text" name="nickname" id="nickname" value="{{ old('nickname') }}" required autofocus
+                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500">
+                @error('nickname')
+                    <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                @enderror
+            </div>
+
+            <div>
+                <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+                <input type="email" name="email" id="email" value="{{ old('email') }}" required
+                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500">
+                @error('email')
+                    <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                @enderror
+            </div>
+
+            <div>
+                <label for="password" class="block text-sm font-medium text-gray-700">Heslo</label>
+                <input type="password" name="password" id="password" required
+                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500">
+                @error('password')
+                    <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                @enderror
+            </div>
+
+            <div>
+                <label for="password_confirmation" class="block text-sm font-medium text-gray-700">Potvrzení hesla</label>
+                <input type="password" name="password_confirmation" id="password_confirmation" required
+                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500">
+            </div>
+
+            <div class="flex items-start">
+                <div class="flex items-center h-5">
+                    <input type="checkbox" name="terms" id="terms" required
+                        class="rounded border-gray-300 text-red-600 shadow-sm focus:border-red-500 focus:ring-red-500">
+                </div>
+                <div class="ml-3 text-sm">
+                    <label for="terms" class="font-medium text-gray-700">Souhlasím s <a href="/podminky" class="text-red-600 hover:underline">podmínkami webu</a></label>
+                    @error('terms')
+                        <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                    @enderror
+                </div>
+            </div>
+
+            <button type="submit" class="w-full bg-red-600 text-white p-3 rounded-md hover:bg-red-700 transition font-bold">
+                Zaregistrovat se
+            </button>
+        </form>
+
+        <div class="relative flex py-5 items-center">
+            <div class="flex-grow border-t border-gray-300"></div>
+            <span class="flex-shrink mx-4 text-gray-400 text-sm">nebo</span>
+            <div class="flex-grow border-t border-gray-300"></div>
+        </div>
 
         <div class="space-y-4">
             <a href="/auth/google" class="flex items-center justify-center gap-3 w-full border p-3 rounded-md hover:bg-gray-50 transition">
