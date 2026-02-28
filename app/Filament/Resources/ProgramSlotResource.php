@@ -92,10 +92,7 @@ class ProgramSlotResource extends Resource
                             ])
                             ->required()
                             ->default('draft')
-<<<<<<< HEAD
-=======
                             // Only Super Admins can set it to 'approved'
->>>>>>> origin/main
                             ->disableOptionWhen(fn (string $value): bool =>
                                 $value === 'approved' && !Auth::user()->isSuperAdmin()
                             )
@@ -154,10 +151,7 @@ class ProgramSlotResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
-<<<<<<< HEAD
-=======
                 // Super Admin can approve directly from table
->>>>>>> origin/main
                 Tables\Actions\Action::make('approve')
                     ->label('Schválit')
                     ->color('success')
