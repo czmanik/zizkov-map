@@ -45,7 +45,10 @@ return new class extends Migration
             $table->string('web_url')->nullable();
             $table->string('instagram_url')->nullable();
             $table->string('facebook_url')->nullable();
+<<<<<<< HEAD
             $table->text('gallery')->nullable();
+=======
+>>>>>>> origin/main
 
             $table->foreignId('owner_id')->nullable()->constrained('users');
             $table->timestamps();
@@ -69,7 +72,10 @@ return new class extends Migration
             $table->dateTime('end_time');
             $table->string('accessibility')->default('all'); // youth, family, adults
             $table->string('external_url')->nullable();
+<<<<<<< HEAD
             $table->string('image')->nullable();
+=======
+>>>>>>> origin/main
             $table->string('status')->default('draft'); // draft, pending, approved
             $table->timestamps();
         });

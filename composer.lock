@@ -4,7 +4,11 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
+<<<<<<< HEAD
     "content-hash": "a2aaf478a22513f4c1b0aeabec8b0e14",
+=======
+    "content-hash": "08a8b3234f8be9309e3819b084025591",
+>>>>>>> origin/main
     "packages": [
         {
             "name": "anourvalar/eloquent-serialize",
@@ -1338,6 +1342,7 @@
             "time": "2026-01-01T16:29:16+00:00"
         },
         {
+<<<<<<< HEAD
             "name": "filament/spatie-laravel-media-library-plugin",
             "version": "v3.3.49",
             "source": {
@@ -1376,6 +1381,8 @@
             "time": "2026-02-07T21:52:00+00:00"
         },
         {
+=======
+>>>>>>> origin/main
             "name": "filament/support",
             "version": "v3.3.49",
             "source": {
