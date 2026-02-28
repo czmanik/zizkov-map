@@ -24,6 +24,16 @@ class UserResource extends Resource
     protected static ?string $modelLabel = 'Uživatel';
     protected static ?string $pluralModelLabel = 'Uživatelé';
 
+    public static function shouldRegisterNavigation(): bool
+    {
+        return auth()->user()->isSuperAdmin();
+    }
+
+    public static function canViewAny(): bool
+    {
+        return auth()->user()->isSuperAdmin();
+    }
+
     public static function form(Form $form): Form
     {
         return $form

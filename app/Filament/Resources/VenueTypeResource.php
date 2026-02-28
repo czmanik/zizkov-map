@@ -19,6 +19,16 @@ class VenueTypeResource extends Resource
     protected static ?string $modelLabel = 'Typ místa';
     protected static ?string $pluralModelLabel = 'Typy míst';
 
+    public static function shouldRegisterNavigation(): bool
+    {
+        return auth()->user()->isSuperAdmin();
+    }
+
+    public static function canViewAny(): bool
+    {
+        return auth()->user()->isSuperAdmin();
+    }
+
     public static function form(Form $form): Form
     {
         return $form

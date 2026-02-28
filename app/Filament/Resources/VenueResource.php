@@ -23,6 +23,16 @@ class VenueResource extends Resource
     protected static ?string $modelLabel = 'Místo';
     protected static ?string $pluralModelLabel = 'Místa';
 
+    public static function canCreate(): bool
+    {
+        return auth()->user()->isSuperAdmin();
+    }
+
+    public static function canDelete(\Illuminate\Database\Eloquent\Model $record): bool
+    {
+        return auth()->user()->isSuperAdmin();
+    }
+
     public static function form(Form $form): Form
     {
         return $form
@@ -93,7 +103,26 @@ class VenueResource extends Resource
                             ->label('Uživatel (Správce)')
                             ->relationship('owner', 'name', fn (Builder $query) => $query->whereIn('role', ['admin', 'superadmin']))
                             ->searchable()
-                            ->preload(),
+                            ->preload()
+                            ->createOptionForm([
+                                Forms\Components\TextInput::make('name')
+                                    ->label('Jméno')
+                                    ->required()
+                                    ->maxLength(255),
+                                Forms\Components\TextInput::make('email')
+                                    ->label('Email')
+                                    ->email()
+                                    ->required()
+                                    ->unique('users', 'email'),
+                                Forms\Components\TextInput::make('password')
+                                    ->label('Heslo')
+                                    ->password()
+                                    ->required()
+                                    ->dehydrateStateUsing(fn ($state) => \Illuminate\Support\Facades\Hash::make($state)),
+                                Forms\Components\Hidden::make('role')
+                                    ->default('admin'),
+                            ])
+                            ->visible(fn () => auth()->user()->isSuperAdmin()),
                     ])->columns(2),
 
                 Forms\Components\Section::make('Odkazy')
@@ -171,6 +200,14 @@ class VenueResource extends Resource
             ]);
     }
 
+
+    public static function getRelations(): array
+    {
+        return [
+            RelationManagers\StagesRelationManager::class,
+        ];
+    }
+
     public static function getEloquentQuery(): Builder
     {
         $query = parent::getEloquentQuery();
@@ -180,13 +217,6 @@ class VenueResource extends Resource
         }
 
         return $query->where('owner_id', Auth::id());
-    }
-
-    public static function getRelations(): array
-    {
-        return [
-            RelationManagers\StagesRelationManager::class,
-        ];
     }
 
     public static function getPages(): array

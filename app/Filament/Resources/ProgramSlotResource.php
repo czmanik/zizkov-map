@@ -164,6 +164,7 @@ class ProgramSlotResource extends Resource
             ]);
     }
 
+
     public static function getEloquentQuery(): Builder
     {
         $query = parent::getEloquentQuery();
@@ -172,9 +173,7 @@ class ProgramSlotResource extends Resource
             return $query;
         }
 
-        return $query->whereHas('stage.venue', function (Builder $q) {
-            $q->where('owner_id', Auth::id());
-        });
+        return $query->whereHas('stage.venue', fn ($q) => $q->where('owner_id', Auth::id()));
     }
 
     public static function getPages(): array
