@@ -13,7 +13,7 @@
             <div>
                 <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
                 <input type="email" name="email" id="email" value="{{ old('email') }}" required autofocus
-                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500">
+                    class="mt-1 block w-full rounded-md border border-gray-400 shadow-sm focus:border-red-500 focus:ring-red-500 p-2">
                 @error('email')
                     <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                 @enderror
@@ -22,7 +22,7 @@
             <div>
                 <label for="password" class="block text-sm font-medium text-gray-700">Heslo</label>
                 <input type="password" name="password" id="password" required
-                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500">
+                    class="mt-1 block w-full rounded-md border border-gray-400 shadow-sm focus:border-red-500 focus:ring-red-500 p-2">
                 @error('password')
                     <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                 @enderror

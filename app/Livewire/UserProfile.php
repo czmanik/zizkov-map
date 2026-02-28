@@ -37,7 +37,7 @@ class UserProfile extends Component
     {
         $this->validate([
             'current_password' => ['required', 'current_password'],
-            'new_password' => ['required', 'confirmed', Password::defaults()],
+            'new_password' => ['required', 'confirmed', Password::min(5)],
         ]);
 
         Auth::user()->update([

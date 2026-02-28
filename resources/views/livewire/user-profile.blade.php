@@ -50,7 +50,7 @@
                 <form wire:submit.prevent="updateNickname" class="space-y-4">
                     <div>
                         <label class="block text-sm font-medium text-gray-700">Přezdívka</label>
-                        <input type="text" wire:model="nickname" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500 sm:text-sm">
+                        <input type="text" wire:model="nickname" class="mt-1 block w-full rounded-md border border-gray-400 shadow-sm focus:border-red-500 focus:ring-red-500 sm:text-sm p-2">
                         @error('nickname') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
                     </div>
                     <button type="submit" class="bg-red-600 text-white px-4 py-2 rounded-md text-sm font-bold hover:bg-red-700 transition">
@@ -64,17 +64,17 @@
                 <form wire:submit.prevent="updatePassword" class="space-y-4">
                     <div>
                         <label class="block text-sm font-medium text-gray-700">Současné heslo</label>
-                        <input type="password" wire:model="current_password" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500 sm:text-sm">
+                        <input type="password" wire:model="current_password" class="mt-1 block w-full rounded-md border border-gray-400 shadow-sm focus:border-red-500 focus:ring-red-500 sm:text-sm p-2">
                         @error('current_password') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700">Nové heslo</label>
-                        <input type="password" wire:model="new_password" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500 sm:text-sm">
+                        <input type="password" wire:model="new_password" class="mt-1 block w-full rounded-md border border-gray-400 shadow-sm focus:border-red-500 focus:ring-red-500 sm:text-sm p-2">
                         @error('new_password') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700">Potvrzení nového hesla</label>
-                        <input type="password" wire:model="new_password_confirmation" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500 sm:text-sm">
+                        <input type="password" wire:model="new_password_confirmation" class="mt-1 block w-full rounded-md border border-gray-400 shadow-sm focus:border-red-500 focus:ring-red-500 sm:text-sm p-2">
                     </div>
                     <button type="submit" class="bg-gray-800 text-white px-4 py-2 rounded-md text-sm font-bold hover:bg-gray-900 transition">
                         Změnit heslo
