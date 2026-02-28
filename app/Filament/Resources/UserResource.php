@@ -29,11 +29,6 @@ class UserResource extends Resource
         return auth()->user()->isSuperAdmin();
     }
 
-    public static function canViewAny(): bool
-    {
-        return auth()->user()->isSuperAdmin();
-    }
-
     public static function form(Form $form): Form
     {
         return $form

@@ -23,7 +23,7 @@ class Settings extends Page
         return auth()->user()->isSuperAdmin();
     }
 
-    public function canAccess(): bool
+    public static function canAccess(): bool
     {
         return auth()->user()->isSuperAdmin();
     }
