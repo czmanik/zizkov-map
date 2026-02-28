@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Resources\UserResource;
+namespace App\Filament\Resources;
 
 use App\Filament\Resources\UserResource\Pages;
 use App\Models\User;
@@ -18,6 +18,16 @@ class UserResource extends Resource
     protected static ?string $navigationGroup = 'Nastavení';
     protected static ?string $modelLabel = 'Uživatel';
     protected static ?string $pluralModelLabel = 'Uživatelé';
+
+    public static function shouldRegisterNavigation(): bool
+    {
+        return auth()->user()->isSuperAdmin();
+    }
+
+    public static function canViewAny(): bool
+    {
+        return auth()->user()->isSuperAdmin();
+    }
 
     public static function form(Form $form): Form
     {

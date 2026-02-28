@@ -78,6 +78,7 @@ class StageResource extends Resource
             ]);
     }
 
+
     public static function getEloquentQuery(): Builder
     {
         $query = parent::getEloquentQuery();
@@ -86,9 +87,7 @@ class StageResource extends Resource
             return $query;
         }
 
-        return $query->whereHas('venue', function (Builder $q) {
-            $q->where('owner_id', Auth::id());
-        });
+        return $query->whereHas('venue', fn ($q) => $q->where('owner_id', Auth::id()));
     }
 
     public static function getPages(): array

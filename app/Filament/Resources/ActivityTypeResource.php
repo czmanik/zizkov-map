@@ -19,6 +19,16 @@ class ActivityTypeResource extends Resource
     protected static ?string $modelLabel = 'Typ aktivity';
     protected static ?string $pluralModelLabel = 'Typy aktivit';
 
+    public static function shouldRegisterNavigation(): bool
+    {
+        return auth()->user()->isSuperAdmin();
+    }
+
+    public static function canViewAny(): bool
+    {
+        return auth()->user()->isSuperAdmin();
+    }
+
     public static function form(Form $form): Form
     {
         return $form

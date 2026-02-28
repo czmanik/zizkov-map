@@ -19,6 +19,16 @@ class PageResource extends Resource
     protected static ?string $modelLabel = 'Stránka';
     protected static ?string $pluralModelLabel = 'Stránky';
 
+    public static function shouldRegisterNavigation(): bool
+    {
+        return auth()->user()->isSuperAdmin();
+    }
+
+    public static function canViewAny(): bool
+    {
+        return auth()->user()->isSuperAdmin();
+    }
+
     public static function form(Form $form): Form
     {
         return $form
