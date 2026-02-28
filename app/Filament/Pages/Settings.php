@@ -18,6 +18,16 @@ class Settings extends Page
     protected static ?string $navigationLabel = 'Globální nastavení';
     protected static string $view = 'filament.pages.settings';
 
+    public static function shouldRegisterNavigation(): bool
+    {
+        return auth()->user()->isSuperAdmin();
+    }
+
+    public function canAccess(): bool
+    {
+        return auth()->user()->isSuperAdmin();
+    }
+
     public ?array $data = [];
 
     public function mount(): void
