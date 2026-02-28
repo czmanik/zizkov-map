@@ -10,8 +10,8 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Filament\Forms\Components\FileUpload;
-use Filament\Tables\Columns\ImageColumn;
+use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
+use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
 
@@ -42,8 +42,9 @@ class VenueResource extends Resource
                         Forms\Components\RichEditor::make('description')
                             ->label('Popis')
                             ->columnSpanFull(),
-                        FileUpload::make('gallery')
+                        SpatieMediaLibraryFileUpload::make('gallery')
                             ->label('Fotogalerie')
+                            ->collection('gallery')
                             ->multiple()
                             ->reorderable()
                             ->columnSpanFull(),
@@ -114,8 +115,10 @@ class VenueResource extends Resource
     {
         return $table
             ->columns([
-                ImageColumn::make('gallery')
+                SpatieMediaLibraryImageColumn::make('gallery')
                     ->label('Foto')
+                    ->collection('gallery')
+                    ->conversion('thumb')
                     ->limit(1),
                 Tables\Columns\TextColumn::make('name')
                     ->label('Název')

@@ -9,8 +9,8 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Filament\Forms\Components\FileUpload;
-use Filament\Tables\Columns\ImageColumn;
+use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
+use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
 
@@ -52,8 +52,9 @@ class ProgramSlotResource extends Resource
                         Forms\Components\RichEditor::make('description')
                             ->label('Popis')
                             ->columnSpanFull(),
-                        FileUpload::make('image')
+                        SpatieMediaLibraryFileUpload::make('image')
                             ->label('Obrázek')
+                            ->collection('image')
                             ->columnSpanFull(),
                     ])->columns(2),
 
@@ -91,7 +92,6 @@ class ProgramSlotResource extends Resource
                             ])
                             ->required()
                             ->default('draft')
-                            // Only Super Admins can set it to 'approved'
                             ->disableOptionWhen(fn (string $value): bool =>
                                 $value === 'approved' && !Auth::user()->isSuperAdmin()
                             )
@@ -104,8 +104,10 @@ class ProgramSlotResource extends Resource
     {
         return $table
             ->columns([
-                ImageColumn::make('image')
-                    ->label('Foto'),
+                SpatieMediaLibraryImageColumn::make('image')
+                    ->label('Foto')
+                    ->collection('image')
+                    ->conversion('thumb'),
                 Tables\Columns\TextColumn::make('name')
                     ->label('Název')
                     ->searchable()
@@ -148,7 +150,6 @@ class ProgramSlotResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
-                // Super Admin can approve directly from table
                 Tables\Actions\Action::make('approve')
                     ->label('Schválit')
                     ->color('success')
