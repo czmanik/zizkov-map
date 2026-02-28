@@ -23,11 +23,13 @@ class User extends Authenticatable implements FilamentUser
      */
     protected $fillable = [
         'name',
+        'nickname',
         'email',
         'password',
         'role',
         'provider',
         'provider_id',
+        'terms_accepted_at',
     ];
 
     /**

@@ -22,7 +22,9 @@ Route::middleware('auth')->group(function () {
 
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthController::class, 'loginView'])->name('login');
+    Route::post('/login', [AuthController::class, 'login']);
     Route::get('/register', [AuthController::class, 'registerView']);
+    Route::post('/register', [AuthController::class, 'register']);
     Route::get('/auth/{provider}', [AuthController::class, 'redirectToProvider']);
     Route::get('/auth/{provider}/callback', [AuthController::class, 'handleProviderCallback']);
 });
