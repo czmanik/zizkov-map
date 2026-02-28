@@ -45,9 +45,12 @@ class ProgramSlot extends Model implements HasMedia
         $this->addMediaConversion('thumb')
             ->fit(Fit::Contain, 300, 300)
             ->nonQueued();
+<<<<<<< HEAD
+=======
 
         $this->addMediaConversion('large')
             ->fit(Fit::Contain, 1200, 1200)
             ->nonQueued();
+>>>>>>> origin/main
     }
 }

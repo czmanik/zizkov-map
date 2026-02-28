@@ -12,8 +12,13 @@ use App\Http\Controllers\AuthController;
 Route::get('/', Homepage::class);
 Route::get('/program', Program::class);
 Route::get('/mista', Venues::class);
+<<<<<<< HEAD
+Route::get('/misto/{venue}', VenueDetail::class)->name('venue.detail');
+Route::get('/stranka/{page:slug}', PageDetail::class);
+=======
 Route::get('/misto/{record}', VenueDetail::class);
 Route::get('/stranka/{slug}', PageDetail::class);
+>>>>>>> origin/main
 
 Route::middleware('auth')->group(function () {
     Route::get('/profil', UserProfile::class);
