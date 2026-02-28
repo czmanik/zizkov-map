@@ -7,19 +7,18 @@ use Livewire\Component;
 
 class VenueDetail extends Component
 {
-    public Venue $venue;
+    public Venue $record;
 
-    public function mount(Venue $venue)
+    public function mount($venue)
     {
-        $this->venue = $venue->load(['stages.programSlots' => function($q) {
+        // Explicitly find by ID to avoid binding issues if any, then load relationships
+        $this->record = Venue::with(['stages.programSlots' => function($q) {
             $q->where('status', 'approved')->orderBy('start_time');
-        }, 'venueType']);
+        }, 'venueType'])->findOrFail($venue);
     }
 
     public function render()
     {
-        return view('livewire.venue-detail', [
-            'record' => $this->venue
-        ]);
+        return view('livewire.venue-detail');
     }
 }

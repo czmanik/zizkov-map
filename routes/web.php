@@ -12,7 +12,7 @@ use App\Http\Controllers\AuthController;
 Route::get('/', Homepage::class);
 Route::get('/program', Program::class);
 Route::get('/mista', Venues::class);
-Route::get('/misto/{venue}', VenueDetail::class);
+Route::get('/misto/{venue}', VenueDetail::class)->name('venue.detail');
 Route::get('/stranka/{page:slug}', PageDetail::class);
 
 Route::middleware('auth')->group(function () {
