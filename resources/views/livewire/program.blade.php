@@ -54,16 +54,16 @@
             <p class="text-gray-500">Kompletní časový harmonogram festivalu.</p>
         </div>
 
-        <div class="flex flex-col gap-4 bg-white p-6 rounded-xl shadow-sm border">
+        <div class="flex flex-col gap-4 bg-white p-6 rounded-xl shadow-md border border-gray-200">
             <div class="flex flex-wrap gap-4">
                 <div class="w-full md:w-64">
-                    <label class="text-[10px] uppercase font-bold text-gray-400 mb-1 block">Hledat</label>
-                    <input wire:model.live="search" type="text" placeholder="Název kapely, divadla..." class="w-full border-gray-200 rounded-lg px-4 py-2 text-sm focus:ring-red-500 focus:border-red-500">
+                    <label class="text-[10px] uppercase font-bold text-gray-500 mb-1 block">Hledat</label>
+                    <input wire:model.live="search" type="text" placeholder="Název kapely, divadla..." class="w-full border-gray-300 rounded-lg px-4 py-2 text-sm focus:ring-red-500 focus:border-red-500 shadow-sm">
                 </div>
 
                 <div class="w-full md:w-64">
-                    <label class="text-[10px] uppercase font-bold text-gray-400 mb-1 block">Místo konání</label>
-                    <select wire:model.live="selectedVenue" class="w-full border-gray-200 rounded-lg px-4 py-2 text-sm focus:ring-red-500 focus:border-red-500">
+                    <label class="text-[10px] uppercase font-bold text-gray-500 mb-1 block">Místo konání</label>
+                    <select wire:model.live="selectedVenue" class="w-full border-gray-300 rounded-lg px-4 py-2 text-sm focus:ring-red-500 focus:border-red-500 shadow-sm">
                         <option value="">Všechna místa</option>
                         @foreach($venues as $venue)
                             <option value="{{ $venue->id }}">{{ $venue->name }}</option>
@@ -73,12 +73,15 @@
             </div>
 
             <div>
-                <label class="text-[10px] uppercase font-bold text-gray-400 mb-2 block">Kategorie</label>
+                <label class="text-[10px] uppercase font-bold text-gray-500 mb-2 block">Kategorie</label>
                 <div class="flex flex-wrap gap-x-6 gap-y-2">
                     @foreach($activityTypes as $type)
                         <label class="inline-flex items-center cursor-pointer group">
-                            <input type="checkbox" wire:model.live="selectedActivityTypes" value="{{ $type->id }}" class="rounded border-gray-300 text-red-600 focus:ring-red-500 h-4 w-4">
-                            <span class="ml-2 text-sm text-gray-600 group-hover:text-gray-900 transition">{{ $type->name }}</span>
+                            <input type="checkbox" wire:model.live="selectedActivityTypes" value="{{ $type->id }}" class="rounded border-gray-300 text-red-600 focus:ring-red-500 h-4 w-4 shadow-sm">
+                            <span class="ml-2 text-sm text-gray-600 group-hover:text-gray-900 transition flex items-center gap-2">
+                                <span class="w-2 h-2 rounded-full" style="background-color: {{ $type->color }}"></span>
+                                {{ $type->name }}
+                            </span>
                         </label>
                     @endforeach
                 </div>
@@ -117,7 +120,7 @@
                             <div class="text-xs text-gray-500">{{ $slot->stage->name }}</div>
                         </div>
                         <div class="col-span-2 p-4">
-                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold uppercase tracking-wider" style="background-color: {{ $slot->activityType->color }}20; color: {{ $slot->activityType->color }}">
                                 {{ $slot->activityType->name }}
                             </span>
                         </div>

@@ -42,6 +42,8 @@ class ActivityTypeResource extends Resource
                     ->label('Slug')
                     ->required()
                     ->unique(ActivityType::class, 'slug', ignoreRecord: true),
+                Forms\Components\ColorPicker::make('color')
+                    ->label('Barva'),
             ]);
     }
 
@@ -53,6 +55,8 @@ class ActivityTypeResource extends Resource
                     ->label('Název')
                     ->sortable()
                     ->searchable(),
+                Tables\Columns\ColorColumn::make('color')
+                    ->label('Barva'),
                 Tables\Columns\TextColumn::make('slug')
                     ->label('Slug'),
             ])

@@ -29,8 +29,8 @@ class ProgramTimeline extends Widget
         }
 
         return $query->with(['programSlots' => function($q) {
-            $q->orderBy('start_time');
-        }])->get();
+            $q->with('activityType')->orderBy('start_time');
+        }, 'venue'])->get();
     }
 
     public function getEventDays()
