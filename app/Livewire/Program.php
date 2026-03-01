@@ -7,14 +7,22 @@ use App\Models\ProgramSlot;
 use App\Models\Venue;
 use App\Models\Setting;
 use Livewire\Component;
+use Livewire\Attributes\Url;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 
 class Program extends Component
 {
+    #[Url]
     public $selectedActivityTypes = [];
+
+    #[Url]
     public $selectedVenue = null;
+
+    #[Url]
     public $selectedAccessibility = null;
+
+    #[Url]
     public $search = '';
 
     public function toggleFavorite($slotId)
@@ -33,31 +41,27 @@ class Program extends Component
 
     public function render()
     {
-        $cacheKey = 'program_' . md5(json_encode($this->selectedActivityTypes) . $this->selectedVenue . $this->selectedAccessibility . $this->search);
+        $query = ProgramSlot::where('status', 'approved')
+            ->with(['stage.venue', 'activityType'])
+            ->orderBy('start_time');
 
-        $slots = Cache::remember($cacheKey, 60, function() {
-            $query = ProgramSlot::where('status', 'approved')
-                ->with(['stage.venue', 'activityType'])
-                ->orderBy('start_time');
+        if (!empty($this->selectedActivityTypes)) {
+            $query->whereIn('activity_type_id', $this->selectedActivityTypes);
+        }
 
-            if (!empty($this->selectedActivityTypes)) {
-                $query->whereIn('activity_type_id', $this->selectedActivityTypes);
-            }
+        if ($this->selectedVenue) {
+            $query->whereHas('stage', fn($q) => $q->where('venue_id', $this->selectedVenue));
+        }
 
-            if ($this->selectedVenue) {
-                $query->whereHas('stage', fn($q) => $q->where('venue_id', $this->selectedVenue));
-            }
+        if ($this->selectedAccessibility) {
+            $query->where('accessibility', $this->selectedAccessibility);
+        }
 
-            if ($this->selectedAccessibility) {
-                $query->where('accessibility', $this->selectedAccessibility);
-            }
+        if ($this->search) {
+            $query->where('name', 'like', '%' . $this->search . '%');
+        }
 
-            if ($this->search) {
-                $query->where('name', 'like', '%' . $this->search . '%');
-            }
-
-            return $query->get()->groupBy(fn($slot) => $slot->start_time->format('Y-m-d'));
-        });
+        $slots = $query->get()->groupBy(fn($slot) => $slot->start_time->format('Y-m-d'));
 
         return view('livewire.program', [
             'days' => $slots,

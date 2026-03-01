@@ -15,14 +15,20 @@ class PendingProgramSlots extends BaseWidget
 
     public static function canView(): bool
     {
-        return Auth::user()->isSuperAdmin();
+        return Auth::user()->isAdmin() || Auth::user()->isSuperAdmin();
     }
 
     public function table(Table $table): Table
     {
+        $query = ProgramSlot::where('status', 'pending');
+
+        if (!Auth::user()->isSuperAdmin()) {
+            $query->whereHas('stage.venue', fn($q) => $q->where('owner_id', Auth::id()));
+        }
+
         return $table
             ->query(
-                ProgramSlot::where('status', 'pending')->orderBy('created_at', 'desc')
+                $query->orderBy('created_at', 'desc')
             )
             ->columns([
                 Tables\Columns\TextColumn::make('name')

@@ -27,21 +27,42 @@
 
             <h2 class="text-2xl font-bold mb-6">Program na tomto místě</h2>
 
-            @if($availableActivityTypes->count() > 0)
-                <div class="flex flex-wrap gap-2 mb-8">
-                    <button wire:click="setFilter(null)" class="px-3 py-1 rounded-full text-xs font-bold transition {{ is_null($filterActivityType) ? 'bg-red-600 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200' }}">Vše</button>
-                    @foreach($availableActivityTypes as $type)
-                        <button wire:click="setFilter('{{ $type }}')" class="px-3 py-1 rounded-full text-xs font-bold transition {{ $filterActivityType === $type ? 'bg-red-600 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200' }}">{{ $type }}</button>
-                    @endforeach
-                </div>
-            @endif
+            <div class="mb-8 space-y-4">
+                @if($availableActivityTypes->count() > 0)
+                    <div>
+                        <h4 class="text-xs font-bold uppercase tracking-wider text-gray-400 mb-2">Typ aktivity</h4>
+                        <div class="flex flex-wrap gap-2">
+                            <button wire:click="setFilter(null)" class="px-3 py-1 rounded-full text-xs font-bold transition {{ is_null($filterActivityType) ? 'bg-red-600 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200' }}">Vše</button>
+                            @foreach($availableActivityTypes as $type)
+                                <button wire:click="setFilter('{{ $type }}')" class="px-3 py-1 rounded-full text-xs font-bold transition {{ $filterActivityType === $type ? 'bg-red-600 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200' }}">{{ $type }}</button>
+                            @endforeach
+                        </div>
+                    </div>
+                @endif
+
+                @if($availableAccessibilities->count() > 0)
+                    <div>
+                        <h4 class="text-xs font-bold uppercase tracking-wider text-gray-400 mb-2">Přístupnost</h4>
+                        <div class="flex flex-wrap gap-2">
+                            <button wire:click="setAccessibilityFilter(null)" class="px-3 py-1 rounded-full text-xs font-bold transition {{ is_null($filterAccessibility) ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200' }}">Vše</button>
+                            @foreach($availableAccessibilities as $acc)
+                                <button wire:click="setAccessibilityFilter('{{ $acc }}')" class="px-3 py-1 rounded-full text-xs font-bold transition {{ $filterAccessibility === $acc ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200' }}">
+                                    {{ match($acc) { 'all' => 'Všem', 'family' => 'Rodiny', 'youth' => 'Mládež', 'adults' => 'Dospělí', default => $acc } }}
+                                </button>
+                            @endforeach
+                        </div>
+                    </div>
+                @endif
+            </div>
 
             <div class="space-y-10">
                 @php $hasAtLeastOneVisibleSlot = false; @endphp
                 @foreach($record->stages as $stage)
                     @php
-                        $filteredSlots = $stage->programSlots->filter(function($slot) use ($filterActivityType) {
-                            return is_null($filterActivityType) || $slot->activityType->name === $filterActivityType;
+                        $filteredSlots = $stage->programSlots->filter(function($slot) use ($filterActivityType, $filterAccessibility) {
+                            $matchesActivity = is_null($filterActivityType) || $slot->activityType->name === $filterActivityType;
+                            $matchesAccessibility = is_null($filterAccessibility) || $slot->accessibility === $filterAccessibility;
+                            return $matchesActivity && $matchesAccessibility;
                         });
                     @endphp
 

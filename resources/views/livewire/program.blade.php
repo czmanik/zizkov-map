@@ -90,7 +90,7 @@
     </div>
 
     @forelse($days as $date => $slots)
-        <div class="mb-12 overflow-x-auto">
+        <div class="mb-12 overflow-x-auto" wire:key="day-{{ $date }}">
             <h2 class="text-2xl font-bold mb-6">
                 {{ \Carbon\Carbon::parse($date)->isoFormat('dddd D. MMMM') }}
             </h2>
@@ -105,7 +105,7 @@
                 </div>
 
                 @foreach($slots as $slot)
-                    <div class="grid grid-cols-12 border-b last:border-0 hover:bg-gray-50 transition items-center">
+                    <div class="grid grid-cols-12 border-b last:border-0 hover:bg-gray-50 transition items-center" wire:key="slot-{{ $slot->id }}">
                         <div class="col-span-2 p-4 font-bold text-red-600">
                             {{ $slot->start_time->format('H:i') }} - {{ $slot->end_time->format('H:i') }}
                         </div>

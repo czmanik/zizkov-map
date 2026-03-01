@@ -9,6 +9,7 @@ class VenueDetail extends Component
 {
     public Venue $record;
     public ?string $filterActivityType = null;
+    public ?string $filterAccessibility = null;
 
     public function mount($venue)
     {
@@ -23,12 +24,19 @@ class VenueDetail extends Component
         $this->filterActivityType = $type;
     }
 
+    public function setAccessibilityFilter($accessibility)
+    {
+        $this->filterAccessibility = $accessibility;
+    }
+
     public function render()
     {
         $activityTypes = $this->record->stages->flatMap->programSlots->pluck('activityType.name')->unique()->sort();
+        $accessibilities = $this->record->stages->flatMap->programSlots->pluck('accessibility')->unique()->sort();
 
         return view('livewire.venue-detail', [
-            'availableActivityTypes' => $activityTypes
+            'availableActivityTypes' => $activityTypes,
+            'availableAccessibilities' => $accessibilities
         ]);
     }
 }

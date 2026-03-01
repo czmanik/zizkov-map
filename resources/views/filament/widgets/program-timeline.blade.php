@@ -45,9 +45,9 @@
                                         <span class="block truncate leading-tight font-semibold text-gray-700 text-sm">{{ $stage->name }}</span>
                                     </div>
 
-                                    <div class="flex-1 space-y-1">
+                                    <div class="flex-1 -space-y-px">
                                         @forelse($lanes as $lane)
-                                            <div class="relative h-10 bg-gray-50/30 rounded border border-gray-100/50 group-hover:bg-gray-100/30 transition-colors">
+                                            <div class="relative h-8 bg-gray-50/20 border border-gray-200/30 group-hover:bg-gray-100/20 transition-colors first:rounded-t last:rounded-b">
                                                 @foreach($lane as $slot)
                                                     @php
                                                         $startPercent = (($slot->start_time->hour * 60) + $slot->start_time->minute) / (24 * 60) * 100;
@@ -58,17 +58,17 @@
                                                         $isPending = $slot->status === 'pending';
                                                     @endphp
                                                     <div
-                                                        class="absolute h-[85%] top-[7.5%] rounded shadow-sm text-[9px] text-white flex flex-col justify-center px-2 overflow-hidden cursor-pointer hover:z-30 hover:scale-[1.02] transition-all border border-black/5 {{ $isPending ? 'opacity-75 ring-1 ring-amber-400 ring-offset-0' : '' }}"
+                                                        class="absolute h-[80%] top-[10%] rounded-sm shadow-sm text-[8px] text-white flex items-center px-1.5 overflow-hidden cursor-pointer hover:z-30 hover:scale-[1.01] transition-all border border-black/10 {{ $isPending ? 'opacity-80 ring-1 ring-amber-400 ring-offset-0' : '' }}"
                                                         style="left: {{ $startPercent }}%; width: {{ $widthPercent }}%; background-color: {{ $bgColor }};"
                                                         title="{{ $slot->name }} ({{ $slot->start_time->format('H:i') }} - {{ $slot->end_time->format('H:i') }}) [{{ $slot->activityType->name }}]{{ $isPending ? ' - ČEKÁ NA SCHVÁLENÍ' : '' }}"
                                                     >
-                                                        <span class="truncate font-bold leading-none">{{ $slot->name }}</span>
-                                                        <span class="text-[7px] opacity-90 font-medium">{{ $slot->start_time->format('H:i') }}</span>
+                                                        <span class="truncate font-bold leading-tight mr-1">{{ $slot->name }}</span>
+                                                        <span class="text-[6px] opacity-80 font-medium shrink-0">{{ $slot->start_time->format('H:i') }}</span>
                                                     </div>
                                                 @endforeach
                                             </div>
                                         @empty
-                                            <div class="h-10 bg-gray-50/10 rounded border border-gray-100/20"></div>
+                                            <div class="h-8 bg-gray-50/5 border border-gray-100/10 rounded"></div>
                                         @endforelse
                                     </div>
                                 </div>
