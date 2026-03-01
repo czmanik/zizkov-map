@@ -1,21 +1,96 @@
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-    <div class="flex flex-col md:flex-row md:items-center justify-between mb-8">
-        <h1 class="text-4xl font-extrabold text-gray-900 mb-4 md:mb-0">Program</h1>
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12" x-data="{
+    now: new Date(),
+    startDate: new Date('{{ $eventStartDate }}T00:00:00'),
+    endDate: new Date('{{ $eventEndDate }}T23:59:59'),
+    getTimeRemaining() {
+        const total = this.startDate - this.now;
+        const seconds = Math.floor((total / 1000) % 60);
+        const minutes = Math.floor((total / 1000 / 60) % 60);
+        const hours = Math.floor((total / (1000 * 60 * 60)) % 24);
+        const days = Math.floor(total / (1000 * 60 * 60 * 24));
+        return { total, days, hours, minutes, seconds };
+    }
+}" x-init="setInterval(() => now = new Date(), 1000)">
 
-        <div class="flex flex-wrap gap-4">
-            <input wire:model.live="search" type="text" placeholder="Hledat..." class="border rounded-md px-4 py-2 text-sm">
+    {{-- Countdown Section --}}
+    <div class="mb-12 text-center bg-gray-900 text-white p-8 rounded-2xl shadow-xl">
+        <template x-if="now < startDate">
+            <div>
+                <p class="text-gray-400 uppercase tracking-widest text-sm mb-4">Program začíná za</p>
+                <div class="flex justify-center gap-4 md:gap-8">
+                    <div class="flex flex-col">
+                        <span class="text-3xl md:text-5xl font-black" x-text="getTimeRemaining().days"></span>
+                        <span class="text-[10px] md:text-xs uppercase text-gray-500">Dní</span>
+                    </div>
+                    <div class="text-3xl md:text-5xl font-light text-gray-700">:</div>
+                    <div class="flex flex-col">
+                        <span class="text-3xl md:text-5xl font-black" x-text="String(getTimeRemaining().hours).padStart(2, '0')"></span>
+                        <span class="text-[10px] md:text-xs uppercase text-gray-500">Hodin</span>
+                    </div>
+                    <div class="text-3xl md:text-5xl font-light text-gray-700">:</div>
+                    <div class="flex flex-col">
+                        <span class="text-3xl md:text-5xl font-black" x-text="String(getTimeRemaining().minutes).padStart(2, '0')"></span>
+                        <span class="text-[10px] md:text-xs uppercase text-gray-500">Minut</span>
+                    </div>
+                    <div class="text-3xl md:text-5xl font-light text-gray-700">:</div>
+                    <div class="flex flex-col">
+                        <span class="text-3xl md:text-5xl font-black" x-text="String(getTimeRemaining().seconds).padStart(2, '0')"></span>
+                        <span class="text-[10px] md:text-xs uppercase text-gray-500">Sekund</span>
+                    </div>
+                </div>
+            </div>
+        </template>
+        <template x-if="now >= startDate && now <= endDate">
+            <h2 class="text-4xl md:text-6xl font-black tracking-tighter italic uppercase">Program běží!</h2>
+        </template>
+        <template x-if="now > endDate">
+            <h2 class="text-2xl font-bold text-gray-500">Akce již skončila</h2>
+        </template>
+    </div>
 
-            <select wire:model.live="selectedActivityType" class="border rounded-md px-4 py-2 text-sm">
-                <option value="">Všechny aktivity</option>
-                @foreach($activityTypes as $type)
-                    <option value="{{ $type->id }}">{{ $type->name }}</option>
-                @endforeach
-            </select>
+    <div class="flex flex-col lg:flex-row lg:items-start justify-between mb-8 gap-8">
+        <div>
+            <h1 class="text-5xl font-black text-gray-900 tracking-tighter mb-2">Program</h1>
+            <p class="text-gray-500">Kompletní časový harmonogram festivalu.</p>
+        </div>
+
+        <div class="flex flex-col gap-4 bg-white p-6 rounded-xl shadow-md border border-gray-200">
+            <div class="flex flex-wrap gap-4">
+                <div class="w-full md:w-64">
+                    <label class="text-[10px] uppercase font-bold text-gray-500 mb-1 block">Hledat</label>
+                    <input wire:model.live="search" type="text" placeholder="Název kapely, divadla..." class="w-full border-gray-300 rounded-lg px-4 py-2 text-sm focus:ring-red-500 focus:border-red-500 shadow-sm">
+                </div>
+
+                <div class="w-full md:w-64">
+                    <label class="text-[10px] uppercase font-bold text-gray-500 mb-1 block">Místo konání</label>
+                    <select wire:model.live="selectedVenue" class="w-full border-gray-300 rounded-lg px-4 py-2 text-sm focus:ring-red-500 focus:border-red-500 shadow-sm">
+                        <option value="">Všechna místa</option>
+                        @foreach($venues as $venue)
+                            <option value="{{ $venue->id }}">{{ $venue->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>
+
+            <div>
+                <label class="text-[10px] uppercase font-bold text-gray-500 mb-2 block">Kategorie</label>
+                <div class="flex flex-wrap gap-x-6 gap-y-2">
+                    @foreach($activityTypes as $type)
+                        <label class="inline-flex items-center cursor-pointer group">
+                            <input type="checkbox" wire:model.live="selectedActivityTypes" value="{{ $type->id }}" class="rounded border-gray-300 text-red-600 focus:ring-red-500 h-4 w-4 shadow-sm">
+                            <span class="ml-2 text-sm text-gray-600 group-hover:text-gray-900 transition flex items-center gap-2">
+                                <span class="w-2 h-2 rounded-full" style="background-color: {{ $type->color }}"></span>
+                                {{ $type->name }}
+                            </span>
+                        </label>
+                    @endforeach
+                </div>
+            </div>
         </div>
     </div>
 
     @forelse($days as $date => $slots)
-        <div class="mb-12 overflow-x-auto">
+        <div class="mb-12 overflow-x-auto" wire:key="day-{{ $date }}">
             <h2 class="text-2xl font-bold mb-6">
                 {{ \Carbon\Carbon::parse($date)->isoFormat('dddd D. MMMM') }}
             </h2>
@@ -30,7 +105,7 @@
                 </div>
 
                 @foreach($slots as $slot)
-                    <div class="grid grid-cols-12 border-b last:border-0 hover:bg-gray-50 transition items-center">
+                    <div class="grid grid-cols-12 border-b last:border-0 hover:bg-gray-50 transition items-center" wire:key="slot-{{ $slot->id }}">
                         <div class="col-span-2 p-4 font-bold text-red-600">
                             {{ $slot->start_time->format('H:i') }} - {{ $slot->end_time->format('H:i') }}
                         </div>
@@ -45,7 +120,7 @@
                             <div class="text-xs text-gray-500">{{ $slot->stage->name }}</div>
                         </div>
                         <div class="col-span-2 p-4">
-                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold uppercase tracking-wider" style="background-color: {{ $slot->activityType->color }}20; color: {{ $slot->activityType->color }}">
                                 {{ $slot->activityType->name }}
                             </span>
                         </div>

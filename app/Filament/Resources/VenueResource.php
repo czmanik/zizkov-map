@@ -14,6 +14,9 @@ use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Setting;
+use Carbon\Carbon;
+use Carbon\CarbonPeriod;
 
 class VenueResource extends Resource
 {
@@ -144,6 +147,37 @@ class VenueResource extends Resource
                             ->label('Facebook')
                             ->url(),
                     ])->columns(3),
+
+                Forms\Components\Section::make('Otevírací doba během akce')
+                    ->schema(function () {
+                        $start = Setting::get('event_start_date');
+                        $end = Setting::get('event_end_date');
+
+                        if (!$start || !$end) {
+                            return [
+                                Forms\Components\Placeholder::make('note')
+                                    ->content('Nejdříve nastavte termín akce v globálním nastavení.')
+                            ];
+                        }
+
+                        $period = CarbonPeriod::create($start, $end);
+                        $fields = [];
+
+                        foreach ($period as $date) {
+                            $dateStr = $date->format('Y-m-d');
+                            $label = $date->translatedFormat('l d.m.');
+
+                            $fields[] = Forms\Components\Fieldset::make($label)
+                                ->schema([
+                                    Forms\Components\TimePicker::make("opening_hours.{$dateStr}.from")
+                                        ->label('Otevřeno od'),
+                                    Forms\Components\TimePicker::make("opening_hours.{$dateStr}.to")
+                                        ->label('Otevřeno do'),
+                                ])->columns(2);
+                        }
+
+                        return $fields;
+                    })
             ]);
     }
 
@@ -217,6 +251,13 @@ class VenueResource extends Resource
     {
         return [
             RelationManagers\StagesRelationManager::class,
+        ];
+    }
+
+    public static function getWidgets(): array
+    {
+        return [
+            \App\Filament\Widgets\ProgramTimeline::class,
         ];
     }
 

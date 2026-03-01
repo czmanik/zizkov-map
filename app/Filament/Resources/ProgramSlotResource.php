@@ -13,6 +13,8 @@ use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Setting;
+use Carbon\Carbon;
 
 class ProgramSlotResource extends Resource
 {
@@ -66,10 +68,21 @@ class ProgramSlotResource extends Resource
                     ->schema([
                         Forms\Components\DateTimePicker::make('start_time')
                             ->label('Od')
-                            ->required(),
+                            ->required()
+                            ->native(false)
+                            ->displayFormat('d.m.Y H:i')
+                            ->minDate(fn() => Setting::get('event_start_date') ? Carbon::parse(Setting::get('event_start_date'))->startOfDay() : null)
+                            ->maxDate(fn() => Setting::get('event_end_date') ? Carbon::parse(Setting::get('event_end_date'))->endOfDay() : null)
+                            ->closeOnDateSelection(),
                         Forms\Components\DateTimePicker::make('end_time')
                             ->label('Do')
-                            ->required(),
+                            ->required()
+                            ->native(false)
+                            ->displayFormat('d.m.Y H:i')
+                            ->after('start_time')
+                            ->minDate(fn() => Setting::get('event_start_date') ? Carbon::parse(Setting::get('event_start_date'))->startOfDay() : null)
+                            ->maxDate(fn() => Setting::get('event_end_date') ? Carbon::parse(Setting::get('event_end_date'))->endOfDay() : null)
+                            ->closeOnDateSelection(),
                         Forms\Components\Select::make('accessibility')
                             ->label('Přístupnost')
                             ->options([
@@ -95,7 +108,7 @@ class ProgramSlotResource extends Resource
                                 'approved' => 'Schváleno',
                             ])
                             ->required()
-                            ->default('draft')
+                            ->default('pending')
                             ->disableOptionWhen(fn (string $value): bool =>
                                 $value === 'approved' && !Auth::user()->isSuperAdmin()
                             )

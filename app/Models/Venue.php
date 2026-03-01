@@ -19,7 +19,12 @@ class Venue extends Model implements HasMedia
         'name', 'venue_type_id', 'description', 'lat', 'lng',
         'address_street', 'address_number', 'address_city',
         'status', 'contact_name', 'contact_phone', 'contact_email',
-        'web_url', 'instagram_url', 'facebook_url', 'owner_id'
+        'web_url', 'instagram_url', 'facebook_url', 'owner_id',
+        'opening_hours'
+    ];
+
+    protected $casts = [
+        'opening_hours' => 'array',
     ];
 
     public function venueType(): BelongsTo

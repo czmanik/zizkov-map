@@ -26,24 +26,73 @@
             @endif
 
             <h2 class="text-2xl font-bold mb-6">Program na tomto místě</h2>
-            <div class="space-y-10">
-                @foreach($record->stages as $stage)
+
+            <div class="mb-8 space-y-4">
+                @if($availableActivityTypes->count() > 0)
                     <div>
-                        <h3 class="text-xl font-bold text-red-600 mb-4">{{ $stage->name }}</h3>
-                        <div class="border-l-2 border-gray-100 ml-4 space-y-6">
-                            @forelse($stage->programSlots as $slot)
-                                <div class="relative pl-8">
-                                    <div class="absolute -left-[9px] top-2 w-4 h-4 rounded-full bg-gray-200 border-4 border-white"></div>
-                                    <div class="text-sm font-bold text-gray-400">{{ $slot->start_time->format('H:i') }} - {{ $slot->end_time->format('H:i') }}</div>
-                                    <h4 class="font-bold text-lg">{{ $slot->name }}</h4>
-                                    <p class="text-gray-600 text-sm">{{ strip_tags($slot->description) }}</p>
-                                </div>
-                            @empty
-                                <p class="text-gray-400 italic ml-8">Pro tuto stage zatím není schválený žádný program.</p>
-                            @endforelse
+                        <h4 class="text-xs font-bold uppercase tracking-wider text-gray-400 mb-2">Typ aktivity</h4>
+                        <div class="flex flex-wrap gap-2">
+                            <button wire:click="setFilter(null)" class="px-3 py-1 rounded-full text-xs font-bold transition {{ is_null($filterActivityType) ? 'bg-red-600 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200' }}">Vše</button>
+                            @foreach($availableActivityTypes as $type)
+                                <button wire:click="setFilter('{{ $type }}')" class="px-3 py-1 rounded-full text-xs font-bold transition {{ $filterActivityType === $type ? 'bg-red-600 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200' }}">{{ $type }}</button>
+                            @endforeach
                         </div>
                     </div>
+                @endif
+
+                @if($availableAccessibilities->count() > 0)
+                    <div>
+                        <h4 class="text-xs font-bold uppercase tracking-wider text-gray-400 mb-2">Přístupnost</h4>
+                        <div class="flex flex-wrap gap-2">
+                            <button wire:click="setAccessibilityFilter(null)" class="px-3 py-1 rounded-full text-xs font-bold transition {{ is_null($filterAccessibility) ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200' }}">Vše</button>
+                            @foreach($availableAccessibilities as $acc)
+                                <button wire:click="setAccessibilityFilter('{{ $acc }}')" class="px-3 py-1 rounded-full text-xs font-bold transition {{ $filterAccessibility === $acc ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200' }}">
+                                    {{ match($acc) { 'all' => 'Všem', 'family' => 'Rodiny', 'youth' => 'Mládež', 'adults' => 'Dospělí', default => $acc } }}
+                                </button>
+                            @endforeach
+                        </div>
+                    </div>
+                @endif
+            </div>
+
+            <div class="space-y-10">
+                @php $hasAtLeastOneVisibleSlot = false; @endphp
+                @foreach($record->stages as $stage)
+                    @php
+                        $filteredSlots = $stage->programSlots->filter(function($slot) use ($filterActivityType, $filterAccessibility) {
+                            $matchesActivity = is_null($filterActivityType) || $slot->activityType->name === $filterActivityType;
+                            $matchesAccessibility = is_null($filterAccessibility) || $slot->accessibility === $filterAccessibility;
+                            return $matchesActivity && $matchesAccessibility;
+                        });
+                    @endphp
+
+                    @if($filteredSlots->count() > 0)
+                        @php $hasAtLeastOneVisibleSlot = true; @endphp
+                        <div>
+                            @if($record->stages->count() > 1)
+                                <h3 class="text-xl font-bold text-red-600 mb-4">{{ $stage->name }}</h3>
+                            @endif
+                            <div class="border-l-2 border-gray-100 ml-4 space-y-6">
+                                @foreach($filteredSlots as $slot)
+                                    <div class="relative pl-8">
+                                        <div class="absolute -left-[9px] top-2 w-4 h-4 rounded-full bg-gray-200 border-4 border-white"></div>
+                                        <div class="flex items-center gap-2 mb-1">
+                                            <div class="text-sm font-bold text-gray-400">{{ $slot->start_time->format('H:i') }} - {{ $slot->end_time->format('H:i') }}</div>
+                                            <span class="bg-gray-100 text-[10px] px-1.5 py-0.5 rounded font-bold text-gray-500 uppercase">{{ $slot->activityType->name }}</span>
+                                            <span class="bg-blue-50 text-[10px] px-1.5 py-0.5 rounded font-bold text-blue-600 uppercase">{{ match($slot->accessibility) { 'all' => 'Všem', 'family' => 'Rodiny', 'youth' => 'Mládež', 'adults' => 'Dospělí', default => $slot->accessibility } }}</span>
+                                        </div>
+                                        <h4 class="font-bold text-lg">{{ $slot->name }}</h4>
+                                        <p class="text-gray-600 text-sm">{{ strip_tags($slot->description) }}</p>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+                    @endif
                 @endforeach
+
+                @if(!$hasAtLeastOneVisibleSlot)
+                    <p class="text-gray-400 italic">Pro toto místo a vybraný filtr zatím není žádný schválený program.</p>
+                @endif
             </div>
         </div>
 
@@ -67,6 +116,22 @@
                         </a>
                     @endif
                 </div>
+
+                @if($record->opening_hours)
+                    <div class="mt-8">
+                        <h4 class="font-bold text-sm uppercase tracking-wider text-gray-400 mb-2">Otevírací doba</h4>
+                        <div class="space-y-1 text-sm">
+                            @foreach($record->opening_hours as $date => $hours)
+                                @if(isset($hours['from']) && isset($hours['to']))
+                                    <div class="flex justify-between">
+                                        <span class="text-gray-500">{{ \Carbon\Carbon::parse($date)->translatedFormat('l d.m.') }}</span>
+                                        <span class="font-bold">{{ $hours['from'] }} - {{ $hours['to'] }}</span>
+                                    </div>
+                                @endif
+                            @endforeach
+                        </div>
+                    </div>
+                @endif
 
                 @if($record->lat && $record->lng)
                     <div class="mt-8">
