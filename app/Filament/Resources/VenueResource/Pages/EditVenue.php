@@ -16,4 +16,16 @@ class EditVenue extends EditRecord
             Actions\DeleteAction::make(),
         ];
     }
+
+    protected function getFooterWidgets(): array
+    {
+        return [
+            \App\Filament\Widgets\ProgramTimeline::class,
+        ];
+    }
+
+    public function getFooterWidgetsColumns(): int | array
+    {
+        return 1;
+    }
 }

@@ -65,13 +65,20 @@ class ProgramSlotResource extends Resource
                         Forms\Components\DateTimePicker::make('start_time')
                             ->label('Od')
                             ->required()
-                            ->afterOrEqual(fn() => Setting::get('event_start_date') ? Carbon::parse(Setting::get('event_start_date'))->startOfDay() : now()->subYears(10))
-                            ->beforeOrEqual(fn() => Setting::get('event_end_date') ? Carbon::parse(Setting::get('event_end_date'))->addDay()->endOfDay() : now()->addYears(10)),
+                            ->native(false)
+                            ->displayFormat('d.m.Y H:i')
+                            ->minDate(fn() => Setting::get('event_start_date') ? Carbon::parse(Setting::get('event_start_date'))->startOfDay() : null)
+                            ->maxDate(fn() => Setting::get('event_end_date') ? Carbon::parse(Setting::get('event_end_date'))->endOfDay() : null)
+                            ->closeOnDateSelection(),
                         Forms\Components\DateTimePicker::make('end_time')
                             ->label('Do')
                             ->required()
+                            ->native(false)
+                            ->displayFormat('d.m.Y H:i')
                             ->after('start_time')
-                            ->beforeOrEqual(fn() => Setting::get('event_end_date') ? Carbon::parse(Setting::get('event_end_date'))->addDay()->endOfDay() : now()->addYears(10)),
+                            ->minDate(fn() => Setting::get('event_start_date') ? Carbon::parse(Setting::get('event_start_date'))->startOfDay() : null)
+                            ->maxDate(fn() => Setting::get('event_end_date') ? Carbon::parse(Setting::get('event_end_date'))->endOfDay() : null)
+                            ->closeOnDateSelection(),
                         Forms\Components\Select::make('accessibility')
                             ->label('Přístupnost')
                             ->options([

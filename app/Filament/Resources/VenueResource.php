@@ -242,6 +242,13 @@ class VenueResource extends Resource
         ];
     }
 
+    public static function getWidgets(): array
+    {
+        return [
+            \App\Filament\Widgets\ProgramTimeline::class,
+        ];
+    }
+
     public static function getEloquentQuery(): Builder
     {
         $query = parent::getEloquentQuery();

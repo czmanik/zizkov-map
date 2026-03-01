@@ -5,13 +5,15 @@ namespace App\Livewire;
 use App\Models\ActivityType;
 use App\Models\ProgramSlot;
 use App\Models\Venue;
+use App\Models\Setting;
 use Livewire\Component;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 
 class Program extends Component
 {
-    public $selectedActivityType = null;
+    public $selectedActivityTypes = [];
+    public $selectedVenue = null;
     public $selectedAccessibility = null;
     public $search = '';
 
@@ -31,15 +33,19 @@ class Program extends Component
 
     public function render()
     {
-        $cacheKey = 'program_' . md5($this->selectedActivityType . $this->selectedAccessibility . $this->search);
+        $cacheKey = 'program_' . md5(json_encode($this->selectedActivityTypes) . $this->selectedVenue . $this->selectedAccessibility . $this->search);
 
         $slots = Cache::remember($cacheKey, 60, function() {
             $query = ProgramSlot::where('status', 'approved')
                 ->with(['stage.venue', 'activityType'])
                 ->orderBy('start_time');
 
-            if ($this->selectedActivityType) {
-                $query->where('activity_type_id', $this->selectedActivityType);
+            if (!empty($this->selectedActivityTypes)) {
+                $query->whereIn('activity_type_id', $this->selectedActivityTypes);
+            }
+
+            if ($this->selectedVenue) {
+                $query->whereHas('stage', fn($q) => $q->where('venue_id', $this->selectedVenue));
             }
 
             if ($this->selectedAccessibility) {
@@ -55,7 +61,10 @@ class Program extends Component
 
         return view('livewire.program', [
             'days' => $slots,
-            'activityTypes' => ActivityType::all()
+            'activityTypes' => ActivityType::all(),
+            'venues' => Venue::where('status', 'public')->orderBy('name')->get(),
+            'eventStartDate' => Setting::get('event_start_date'),
+            'eventEndDate' => Setting::get('event_end_date'),
         ]);
     }
 }
