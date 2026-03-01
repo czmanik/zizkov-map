@@ -9,6 +9,8 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
+use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
 
@@ -42,6 +44,14 @@ class StageResource extends Resource
                 Forms\Components\Textarea::make('description')
                     ->label('Popis')
                     ->columnSpanFull(),
+                SpatieMediaLibraryFileUpload::make('gallery')
+                    ->label('Fotogalerie')
+                    ->collection('gallery')
+                    ->multiple()
+                    ->reorderable()
+                    ->image()
+                    ->imageEditor()
+                    ->columnSpanFull(),
             ]);
     }
 
@@ -49,6 +59,12 @@ class StageResource extends Resource
     {
         return $table
             ->columns([
+                SpatieMediaLibraryImageColumn::make('gallery')
+                    ->label('Galerie')
+                    ->collection('gallery')
+                    ->conversion('thumb')
+                    ->limit(3)
+                    ->stacked(),
                 Tables\Columns\TextColumn::make('venue.name')
                     ->label('Místo')
                     ->sortable()

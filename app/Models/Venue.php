@@ -42,17 +42,26 @@ class Venue extends Model implements HasMedia
         return $this->belongsTo(User::class, 'owner_id');
     }
 
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection('logo')
+            ->singleFile();
+
+        $this->addMediaCollection('gallery');
+    }
+
     public function registerMediaConversions(Media $media = null): void
     {
         $this->addMediaConversion('thumb')
             ->fit(Fit::Contain, 400, 300)
-            ->sharpen(10)
+            ->nonQueued();
+
+        $this->addMediaConversion('medium')
+            ->fit(Fit::Contain, 800, 600)
             ->nonQueued();
 
         $this->addMediaConversion('large')
-            ->width(1200)
-            ->height(800)
-            ->fit(Fit::Contain, 1200, 800)
+            ->fit(Fit::Contain, 1600, 1200)
             ->nonQueued();
     }
 }
