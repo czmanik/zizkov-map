@@ -52,9 +52,13 @@ class ProgramSlotResource extends Resource
                         Forms\Components\RichEditor::make('description')
                             ->label('Popis')
                             ->columnSpanFull(),
-                        SpatieMediaLibraryFileUpload::make('image')
-                            ->label('Obrázek')
-                            ->collection('image')
+                        SpatieMediaLibraryFileUpload::make('gallery')
+                            ->label('Fotogalerie')
+                            ->collection('gallery')
+                            ->multiple()
+                            ->reorderable()
+                            ->image()
+                            ->imageEditor()
                             ->columnSpanFull(),
                     ])->columns(2),
 
@@ -104,10 +108,12 @@ class ProgramSlotResource extends Resource
     {
         return $table
             ->columns([
-                SpatieMediaLibraryImageColumn::make('image')
-                    ->label('Foto')
-                    ->collection('image')
-                    ->conversion('thumb'),
+                SpatieMediaLibraryImageColumn::make('gallery')
+                    ->label('Galerie')
+                    ->collection('gallery')
+                    ->conversion('thumb')
+                    ->limit(3)
+                    ->stacked(),
                 Tables\Columns\TextColumn::make('name')
                     ->label('Název')
                     ->searchable()

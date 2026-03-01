@@ -40,10 +40,23 @@ class ProgramSlot extends Model implements HasMedia
         return $this->belongsToMany(User::class, 'program_slot_user');
     }
 
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection('gallery');
+    }
+
     public function registerMediaConversions(Media $media = null): void
     {
         $this->addMediaConversion('thumb')
-            ->fit(Fit::Contain, 300, 300)
+            ->fit(Fit::Contain, 400, 300)
+            ->nonQueued();
+
+        $this->addMediaConversion('medium')
+            ->fit(Fit::Contain, 800, 600)
+            ->nonQueued();
+
+        $this->addMediaConversion('large')
+            ->fit(Fit::Contain, 1600, 1200)
             ->nonQueued();
     }
 }

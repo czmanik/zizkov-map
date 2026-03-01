@@ -52,11 +52,18 @@ class VenueResource extends Resource
                         Forms\Components\RichEditor::make('description')
                             ->label('Popis')
                             ->columnSpanFull(),
+                        SpatieMediaLibraryFileUpload::make('logo')
+                            ->label('Logo podniku')
+                            ->collection('logo')
+                            ->image()
+                            ->imageEditor(),
                         SpatieMediaLibraryFileUpload::make('gallery')
                             ->label('Fotogalerie')
                             ->collection('gallery')
                             ->multiple()
                             ->reorderable()
+                            ->image()
+                            ->imageEditor()
                             ->columnSpanFull(),
                     ])->columns(2),
 
@@ -144,11 +151,16 @@ class VenueResource extends Resource
     {
         return $table
             ->columns([
+                SpatieMediaLibraryImageColumn::make('logo')
+                    ->label('Logo')
+                    ->collection('logo')
+                    ->conversion('thumb'),
                 SpatieMediaLibraryImageColumn::make('gallery')
-                    ->label('Foto')
+                    ->label('Galerie')
                     ->collection('gallery')
                     ->conversion('thumb')
-                    ->limit(1),
+                    ->limit(3)
+                    ->stacked(),
                 Tables\Columns\TextColumn::make('name')
                     ->label('Název')
                     ->searchable()
