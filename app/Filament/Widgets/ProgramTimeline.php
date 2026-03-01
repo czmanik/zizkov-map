@@ -40,14 +40,55 @@ class ProgramTimeline extends Widget
 
         if (!$start || !$end) return [];
 
-        return CarbonPeriod::create($start, $end)->toArray();
+        $days = CarbonPeriod::create($start, $end)->toArray();
+        foreach ($days as $day) {
+            $day->setLocale('cs');
+        }
+        return $days;
     }
 
     protected function getViewData(): array
     {
+        $stages = $this->getStages();
+        $days = $this->getEventDays();
+
+        $processedStages = $stages->map(function ($stage) use ($days) {
+            $lanesByDay = [];
+            foreach ($days as $day) {
+                $slotsForDay = $stage->programSlots
+                    ->filter(fn($slot) => $slot->start_time->isSameDay($day))
+                    ->sortBy('start_time');
+
+                $lanes = [];
+                foreach ($slotsForDay as $slot) {
+                    $assigned = false;
+                    foreach ($lanes as &$lane) {
+                        $lastSlot = end($lane);
+                        // If current slot starts after last slot in lane ends (or at same time)
+                        if ($slot->start_time >= $lastSlot->end_time) {
+                            $lane[] = $slot;
+                            $assigned = true;
+                            break;
+                        }
+                    }
+                    if (!$assigned) {
+                        $lanes[] = [$slot];
+                    }
+                }
+                $lanesByDay[$day->format('Y-m-d')] = $lanes;
+            }
+
+            return (object) [
+                'id' => $stage->id,
+                'name' => $stage->name,
+                'venue' => $stage->venue,
+                'lanesByDay' => $lanesByDay,
+            ];
+        });
+
         return [
-            'stages' => $this->getStages(),
-            'days' => $this->getEventDays(),
+            'stages' => $processedStages,
+            'days' => $days,
         ];
     }
 }
