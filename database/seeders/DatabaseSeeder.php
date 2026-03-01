@@ -31,6 +31,8 @@ class DatabaseSeeder extends Seeder
         // 2. Settings
         Setting::set('event_name', 'Žižkovská noc 2026');
         Setting::set('ico', '12345678');
+        Setting::set('event_start_date', '2026-03-20');
+        Setting::set('event_end_date', '2026-03-21');
 
         // 3. Venue Types
         $venueTypes = [];
@@ -80,6 +82,10 @@ class DatabaseSeeder extends Seeder
             'lng' => 14.4487222,
             'status' => 'public',
             'owner_id' => $adminUser->id,
+            'opening_hours' => [
+                '2026-03-20' => ['from' => '17:00', 'to' => '04:00'],
+                '2026-03-21' => ['from' => '14:00', 'to' => '04:00'],
+            ]
         ]);
 
         $mainStage = Stage::create([

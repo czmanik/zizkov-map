@@ -15,10 +15,6 @@ class UserResource extends Resource
 {
     protected static ?string $model = User::class;
 
-    public static function canViewAny(): bool
-    {
-        return auth()->user()?->isSuperAdmin() ?? false;
-    }
     protected static ?string $navigationIcon = 'heroicon-o-users';
     protected static ?string $navigationGroup = 'Nastavení';
     protected static ?string $modelLabel = 'Uživatel';
@@ -26,12 +22,12 @@ class UserResource extends Resource
 
     public static function shouldRegisterNavigation(): bool
     {
-        return auth()->user()->isSuperAdmin();
+        return auth()->user()?->isSuperAdmin() ?? false;
     }
 
     public static function canViewAny(): bool
     {
-        return auth()->user()->isSuperAdmin();
+        return auth()->user()?->isSuperAdmin() ?? false;
     }
 
     public static function form(Form $form): Form

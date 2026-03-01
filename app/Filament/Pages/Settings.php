@@ -6,6 +6,7 @@ use App\Models\Setting;
 use Filament\Pages\Page;
 use Filament\Forms\Form;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Section;
 use Filament\Notifications\Notification;
 use Filament\Actions\Action;
@@ -20,12 +21,12 @@ class Settings extends Page
 
     public static function shouldRegisterNavigation(): bool
     {
-        return auth()->user()->isSuperAdmin();
+        return auth()->user()?->isSuperAdmin() ?? false;
     }
 
-    public function canAccess(): bool
+    public static function canAccess(): bool
     {
-        return auth()->user()->isSuperAdmin();
+        return auth()->user()?->isSuperAdmin() ?? false;
     }
 
     public ?array $data = [];
@@ -35,6 +36,8 @@ class Settings extends Page
         $this->data = [
             'event_name' => Setting::get('event_name'),
             'ico' => Setting::get('ico'),
+            'event_start_date' => Setting::get('event_start_date'),
+            'event_end_date' => Setting::get('event_end_date'),
         ];
 
         $this->form->fill($this->data);
@@ -51,7 +54,13 @@ class Settings extends Page
                             ->required(),
                         TextInput::make('ico')
                             ->label('IČO'),
-                    ])
+                        DatePicker::make('event_start_date')
+                            ->label('Datum začátku akce')
+                            ->required(),
+                        DatePicker::make('event_end_date')
+                            ->label('Datum konce akce')
+                            ->required(),
+                    ])->columns(2)
             ])
             ->statePath('data');
     }

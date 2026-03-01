@@ -13,6 +13,8 @@ use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Setting;
+use Carbon\Carbon;
 
 class ProgramSlotResource extends Resource
 {
@@ -62,10 +64,14 @@ class ProgramSlotResource extends Resource
                     ->schema([
                         Forms\Components\DateTimePicker::make('start_time')
                             ->label('Od')
-                            ->required(),
+                            ->required()
+                            ->afterOrEqual(fn() => Setting::get('event_start_date') ? Carbon::parse(Setting::get('event_start_date'))->startOfDay() : now()->subYears(10))
+                            ->beforeOrEqual(fn() => Setting::get('event_end_date') ? Carbon::parse(Setting::get('event_end_date'))->addDay()->endOfDay() : now()->addYears(10)),
                         Forms\Components\DateTimePicker::make('end_time')
                             ->label('Do')
-                            ->required(),
+                            ->required()
+                            ->after('start_time')
+                            ->beforeOrEqual(fn() => Setting::get('event_end_date') ? Carbon::parse(Setting::get('event_end_date'))->addDay()->endOfDay() : now()->addYears(10)),
                         Forms\Components\Select::make('accessibility')
                             ->label('Přístupnost')
                             ->options([
@@ -91,7 +97,7 @@ class ProgramSlotResource extends Resource
                                 'approved' => 'Schváleno',
                             ])
                             ->required()
-                            ->default('draft')
+                            ->default('pending')
                             ->disableOptionWhen(fn (string $value): bool =>
                                 $value === 'approved' && !Auth::user()->isSuperAdmin()
                             )
