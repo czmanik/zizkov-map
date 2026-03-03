@@ -12,7 +12,7 @@ class Homepage extends Component
     public function render()
     {
         // Cache GeoJSON data for 10 minutes, invalidate on Venue change (logic handled here for simplicity)
-        $venuesData = Cache::remember('venues_geojson_v2', 600, function() {
+        $venuesData = Cache::remember('venues_geojson_v3', 600, function() {
             return Venue::where('status', 'public')->with(['venueType', 'stages.programSlots' => function($q) {
                 $q->where('status', 'approved')->where('end_time', '>', now());
             }, 'stages.programSlots.activityType'])->get()->map(fn($v) => [
@@ -20,7 +20,7 @@ class Homepage extends Component
                 'name' => $v->name,
                 'lat' => $v->lat,
                 'lng' => $v->lng,
-                'url' => "/misto/{$v->id}",
+                'url' => "/misto/{$v->slug}",
                 'address' => "{$v->address_street} {$v->address_number}",
                 'type' => $v->venueType->name,
                 'activity_types' => $v->stages->flatMap->programSlots->pluck('activityType.name')->unique()->values()->all()

@@ -3,7 +3,7 @@
 
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         @foreach($venues as $venue)
-            <a href="/misto/{{ $venue->id }}" class="group bg-white rounded-xl shadow-sm border overflow-hidden hover:shadow-md transition">
+            <a href="{{ route('venue.detail', ['venue' => $venue->slug]) }}" class="group bg-white rounded-xl shadow-sm border overflow-hidden hover:shadow-md transition">
                 <div class="aspect-video bg-gray-200 overflow-hidden relative">
                     @if($venue->hasMedia('gallery'))
                         <img src="{{ $venue->getFirstMediaUrl('gallery', 'thumb') }}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">

@@ -15,9 +15,9 @@
                             </div>
 
                             <div class="flex-grow">
-                                <h3 class="text-xl font-bold mb-1">{{ $slot->name }}</h3>
+                                <a href="{{ route('program.detail', ['venue' => $slot->stage->venue->slug, 'programSlot' => $slot->slug]) }}" class="text-xl font-bold mb-1 hover:text-red-600 transition block">{{ $slot->name }}</a>
                                 <div class="text-gray-600">
-                                    {{ $slot->stage->venue->name }} — {{ $slot->stage->name }}
+                                    <a href="{{ route('venue.detail', ['venue' => $slot->stage->venue->slug]) }}" class="hover:underline">{{ $slot->stage->venue->name }}</a> — {{ $slot->stage->name }}
                                 </div>
                             </div>
 

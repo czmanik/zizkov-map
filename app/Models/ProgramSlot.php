@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Support\Str;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\Image\Enums\Fit;
@@ -16,7 +17,7 @@ class ProgramSlot extends Model implements HasMedia
     use HasFactory, InteractsWithMedia;
 
     protected $fillable = [
-        'stage_id', 'activity_type_id', 'name', 'description',
+        'stage_id', 'activity_type_id', 'name', 'slug', 'description',
         'start_time', 'end_time', 'accessibility', 'external_url', 'status'
     ];
 
@@ -24,6 +25,22 @@ class ProgramSlot extends Model implements HasMedia
         'start_time' => 'datetime',
         'end_time' => 'datetime',
     ];
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($slot) {
+            if (empty($slot->slug)) {
+                $slot->slug = Str::slug($slot->name);
+            }
+        });
+    }
+
+    public function getRouteKeyName()
+    {
+        return 'slug';
+    }
 
     public function stage(): BelongsTo
     {

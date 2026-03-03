@@ -25,18 +25,30 @@ class Program extends Component
     #[Url]
     public $search = '';
 
+    public $favoriteSlotIds = [];
+
+    public function mount()
+    {
+        $this->refreshFavorites();
+    }
+
+    public function refreshFavorites()
+    {
+        if (Auth::check()) {
+            $this->favoriteSlotIds = Auth::user()->favoriteSlots()->pluck('program_slots.id')->toArray();
+        } else {
+            $this->favoriteSlotIds = [];
+        }
+    }
+
     public function toggleFavorite($slotId)
     {
         if (!Auth::check()) {
             return $this->redirect('/login');
         }
 
-        $user = Auth::user();
-        if ($user->favoriteSlots()->where('program_slot_id', $slotId)->exists()) {
-            $user->favoriteSlots()->detach($slotId);
-        } else {
-            $user->favoriteSlots()->attach($slotId);
-        }
+        Auth::user()->favoriteSlots()->toggle($slotId);
+        $this->refreshFavorites();
     }
 
     public function render()
