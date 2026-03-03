@@ -5,6 +5,7 @@ use App\Livewire\Homepage;
 use App\Livewire\Program;
 use App\Livewire\Venues;
 use App\Livewire\VenueDetail;
+use App\Livewire\ProgramDetail;
 use App\Livewire\PageDetail;
 use App\Livewire\UserProfile;
 use App\Http\Controllers\AuthController;
@@ -12,7 +13,8 @@ use App\Http\Controllers\AuthController;
 Route::get('/', Homepage::class);
 Route::get('/program', Program::class);
 Route::get('/mista', Venues::class);
-Route::get('/misto/{venue}', VenueDetail::class)->name('venue.detail');
+Route::get('/misto/{venue:slug}', VenueDetail::class)->name('venue.detail');
+Route::get('/misto/{venue:slug}/program/{programSlot:slug}', ProgramDetail::class)->name('program.detail');
 Route::get('/stranka/{page:slug}', PageDetail::class);
 
 Route::middleware('auth')->group(function () {

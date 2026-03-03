@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Str;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\Image\Enums\Fit;
@@ -16,7 +17,7 @@ class Venue extends Model implements HasMedia
     use HasFactory, InteractsWithMedia;
 
     protected $fillable = [
-        'name', 'venue_type_id', 'description', 'lat', 'lng',
+        'name', 'slug', 'venue_type_id', 'description', 'lat', 'lng',
         'address_street', 'address_number', 'address_city',
         'status', 'contact_name', 'contact_phone', 'contact_email',
         'web_url', 'instagram_url', 'facebook_url', 'owner_id',
@@ -26,6 +27,22 @@ class Venue extends Model implements HasMedia
     protected $casts = [
         'opening_hours' => 'array',
     ];
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($venue) {
+            if (empty($venue->slug)) {
+                $venue->slug = Str::slug($venue->name);
+            }
+        });
+    }
+
+    public function getRouteKeyName()
+    {
+        return 'slug';
+    }
 
     public function venueType(): BelongsTo
     {

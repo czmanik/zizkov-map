@@ -110,11 +110,11 @@
                             {{ $slot->start_time->format('H:i') }} - {{ $slot->end_time->format('H:i') }}
                         </div>
                         <div class="col-span-3 p-4">
-                            <div class="font-bold text-lg leading-tight">{{ $slot->name }}</div>
+                            <a href="{{ route('program.detail', ['venue' => $slot->stage->venue->slug, 'programSlot' => $slot->slug]) }}" class="font-bold text-lg leading-tight hover:text-red-600 transition">{{ $slot->name }}</a>
                             <div class="text-xs text-gray-500 mt-1 line-clamp-1">{{ strip_tags($slot->description) }}</div>
                         </div>
                         <div class="col-span-3 p-4">
-                            <a href="/misto/{{ $slot->stage->venue->id }}" class="font-medium hover:text-red-600 block">
+                            <a href="{{ route('venue.detail', ['venue' => $slot->stage->venue->slug]) }}" class="font-medium hover:text-red-600 block">
                                 {{ $slot->stage->venue->name }}
                             </a>
                             <div class="text-xs text-gray-500">{{ $slot->stage->name }}</div>
@@ -126,13 +126,13 @@
                         </div>
                         <div class="col-span-2 p-4 text-right flex justify-end gap-4">
                             @auth
-                                <button wire:click="toggleFavorite({{ $slot->id }})" class="{{ Auth::user()->favoriteSlots->contains($slot->id) ? 'text-red-600' : 'text-gray-300 hover:text-red-400' }}">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="{{ Auth::user()->favoriteSlots->contains($slot->id) ? 'currentColor' : 'none' }}" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                <button wire:click="toggleFavorite({{ $slot->id }})" class="{{ in_array($slot->id, $favoriteSlotIds) ? 'text-red-600' : 'text-gray-300 hover:text-red-400' }}">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="{{ in_array($slot->id, $favoriteSlotIds) ? 'currentColor' : 'none' }}" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
                                     </svg>
                                 </button>
                             @endauth
-                            <a href="/misto/{{ $slot->stage->venue->id }}" class="text-gray-400 hover:text-gray-900">
+                            <a href="{{ route('program.detail', ['venue' => $slot->stage->venue->slug, 'programSlot' => $slot->slug]) }}" class="text-gray-400 hover:text-red-600 transition">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
                                 </svg>

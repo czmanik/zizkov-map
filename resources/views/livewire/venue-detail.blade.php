@@ -81,7 +81,7 @@
                                             <span class="bg-gray-100 text-[10px] px-1.5 py-0.5 rounded font-bold text-gray-500 uppercase">{{ $slot->activityType->name }}</span>
                                             <span class="bg-blue-50 text-[10px] px-1.5 py-0.5 rounded font-bold text-blue-600 uppercase">{{ match($slot->accessibility) { 'all' => 'Všem', 'family' => 'Rodiny', 'youth' => 'Mládež', 'adults' => 'Dospělí', default => $slot->accessibility } }}</span>
                                         </div>
-                                        <h4 class="font-bold text-lg">{{ $slot->name }}</h4>
+                                        <h4 class="font-bold text-lg"><a href="{{ route('program.detail', ['venue' => $record->slug, 'programSlot' => $slot->slug]) }}" class="hover:text-red-600 transition">{{ $slot->name }}</a></h4>
                                         <p class="text-gray-600 text-sm">{{ strip_tags($slot->description) }}</p>
                                     </div>
                                 @endforeach
