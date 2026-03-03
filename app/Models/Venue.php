@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Support\Str;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
@@ -52,6 +53,11 @@ class Venue extends Model implements HasMedia
     public function stages(): HasMany
     {
         return $this->hasMany(Stage::class);
+    }
+
+    public function programSlots(): HasManyThrough
+    {
+        return $this->hasManyThrough(ProgramSlot::class, Stage::class);
     }
 
     public function owner(): BelongsTo
