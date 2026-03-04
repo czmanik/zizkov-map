@@ -77,6 +77,6 @@ class User extends Authenticatable implements FilamentUser
 
     public function favoriteSlots(): BelongsToMany
     {
-        return $this->belongsToMany(ProgramSlot::class, 'program_slot_user');
+        return $this->belongsToMany(ProgramSlot::class, 'program_slot_user')->withTimestamps();
     }
 }

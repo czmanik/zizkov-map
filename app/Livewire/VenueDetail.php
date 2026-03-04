@@ -11,12 +11,11 @@ class VenueDetail extends Component
     public ?string $filterActivityType = null;
     public ?string $filterAccessibility = null;
 
-    public function mount($venue)
+    public function mount(Venue $venue)
     {
-        // Explicitly find by ID to avoid binding issues if any, then load relationships
-        $this->record = Venue::with(['stages.programSlots' => function($q) {
+        $this->record = $venue->load(['stages.programSlots' => function($q) {
             $q->where('status', 'approved')->with('activityType')->orderBy('start_time');
-        }, 'venueType'])->findOrFail($venue);
+        }, 'venueType']);
     }
 
     public function setFilter($type)

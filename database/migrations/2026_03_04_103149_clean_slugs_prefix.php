@@ -10,22 +10,14 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::table('venues', function (Blueprint $table) {
-            $table->string('slug')->nullable()->unique()->after('name');
-        });
-
-        Schema::table('program_slots', function (Blueprint $table) {
-            $table->string('slug')->nullable()->unique()->after('name');
-        });
-
-        // Generate slugs for existing venues
+        // Vyčištění slugů u venues - odstranění přípony -ID
         DB::table('venues')->get()->each(function ($venue) {
             DB::table('venues')->where('id', $venue->id)->update([
                 'slug' => Str::slug($venue->name)
             ]);
         });
 
-        // Generate slugs for existing program slots
+        // Vyčištění slugů u program_slots - odstranění přípony -ID
         DB::table('program_slots')->get()->each(function ($slot) {
             DB::table('program_slots')->where('id', $slot->id)->update([
                 'slug' => Str::slug($slot->name)
@@ -35,12 +27,5 @@ return new class extends Migration
 
     public function down(): void
     {
-        Schema::table('venues', function (Blueprint $table) {
-            $table->dropColumn('slug');
-        });
-
-        Schema::table('program_slots', function (Blueprint $table) {
-            $table->dropColumn('slug');
-        });
     }
 };

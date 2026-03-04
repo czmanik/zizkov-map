@@ -54,16 +54,16 @@
             <p class="text-gray-500">Kompletní časový harmonogram festivalu.</p>
         </div>
 
-        <div class="flex flex-col gap-4 bg-white p-6 rounded-xl shadow-md border border-gray-200">
+        <form wire:submit.prevent="" class="flex flex-col gap-4 bg-white p-6 rounded-xl shadow-md border border-gray-200">
             <div class="flex flex-wrap gap-4">
                 <div class="w-full md:w-64">
-                    <label class="text-[10px] uppercase font-bold text-gray-500 mb-1 block">Hledat</label>
-                    <input wire:model.live="search" type="text" placeholder="Název kapely, divadla..." class="w-full border-gray-300 rounded-lg px-4 py-2 text-sm focus:ring-red-500 focus:border-red-500 shadow-sm">
+                    <label for="search" class="text-[10px] uppercase font-bold text-gray-500 mb-1 block">Hledat</label>
+                    <input wire:model.live.debounce.300ms="search" id="search" type="text" placeholder="Název kapely, divadla..." class="w-full border-gray-300 rounded-lg px-4 py-2 text-sm focus:ring-red-500 focus:border-red-500 shadow-sm">
                 </div>
 
                 <div class="w-full md:w-64">
-                    <label class="text-[10px] uppercase font-bold text-gray-500 mb-1 block">Místo konání</label>
-                    <select wire:model.live="selectedVenue" class="w-full border-gray-300 rounded-lg px-4 py-2 text-sm focus:ring-red-500 focus:border-red-500 shadow-sm">
+                    <label for="selectedVenue" class="text-[10px] uppercase font-bold text-gray-500 mb-1 block">Místo konání</label>
+                    <select wire:model.live="selectedVenue" id="selectedVenue" class="w-full border-gray-300 rounded-lg px-4 py-2 text-sm focus:ring-red-500 focus:border-red-500 shadow-sm">
                         <option value="">Všechna místa</option>
                         @foreach($venues as $venue)
                             <option value="{{ $venue->id }}">{{ $venue->name }}</option>
@@ -76,7 +76,7 @@
                 <label class="text-[10px] uppercase font-bold text-gray-500 mb-2 block">Kategorie</label>
                 <div class="flex flex-wrap gap-x-6 gap-y-2">
                     @foreach($activityTypes as $type)
-                        <label class="inline-flex items-center cursor-pointer group">
+                        <label class="inline-flex items-center cursor-pointer group" wire:key="type-{{ $type->id }}">
                             <input type="checkbox" wire:model.live="selectedActivityTypes" value="{{ $type->id }}" class="rounded border-gray-300 text-red-600 focus:ring-red-500 h-4 w-4 shadow-sm">
                             <span class="ml-2 text-sm text-gray-600 group-hover:text-gray-900 transition flex items-center gap-2">
                                 <span class="w-2 h-2 rounded-full" style="background-color: {{ $type->color }}"></span>
@@ -86,7 +86,7 @@
                     @endforeach
                 </div>
             </div>
-        </div>
+        </form>
     </div>
 
     @forelse($days as $date => $slots)
@@ -126,7 +126,7 @@
                         </div>
                         <div class="col-span-2 p-4 text-right flex justify-end gap-4">
                             @auth
-                                <button wire:click="toggleFavorite({{ $slot->id }})" class="{{ in_array($slot->id, $favoriteSlotIds) ? 'text-red-600' : 'text-gray-300 hover:text-red-400' }}">
+                                <button type="button" wire:click.stop="toggleFavorite({{ $slot->id }})" class="{{ in_array($slot->id, $favoriteSlotIds) ? 'text-red-600' : 'text-gray-300 hover:text-red-400' }} focus:outline-none transition transform active:scale-95" wire:loading.attr="disabled">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="{{ in_array($slot->id, $favoriteSlotIds) ? 'currentColor' : 'none' }}" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
                                     </svg>

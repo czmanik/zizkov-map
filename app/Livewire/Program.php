@@ -61,7 +61,7 @@ class Program extends Component
             $query->whereIn('activity_type_id', $this->selectedActivityTypes);
         }
 
-        if ($this->selectedVenue) {
+        if ($this->selectedVenue && $this->selectedVenue !== '') {
             $query->whereHas('stage', fn($q) => $q->where('venue_id', $this->selectedVenue));
         }
 
